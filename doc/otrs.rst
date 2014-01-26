@@ -195,3 +195,16 @@ Quelques outils
 ---------------
 
 Lors de la migration 1.3 -> 2.0 d'OTRS, une certaine quantité de scripts ont été faits pour traiter la base de données ``otrs``, essentiellement pour nettoyer un peu (``flush*``) et faire la conversion des charsets (lors de 1.3, on était en latin1). Ils se trouvent dans ``svoboda:~bernardofpc/otrs2/``.
+
+Export MailBox
+~~~~~~~~~~~~~~
+
+Pour exporter tout une file en un fichier MailBox, il suffit de concaténer tous les messages présents dans base de donnée. Cela peut se faire en une requête SQL exécutée avec la commande ``mysql -rsN`` (options ``--raw``, ``--silent`` et ``--skip-column-names``. Par exemple, la commande suivante exporte toute la file Support::
+
+    mysql -rsN -u otrs -p otrs -e \
+        'SELECT  ap.body \
+           FROM  queue AS q \
+      LEFT JOIN  ticket AS t ON (t.queue_id = q.id) \
+      LEFT JOIN  article AS a ON (a.ticket_id = t.id) \
+      LEFT JOIN  article_plain AS ap ON (ap.article_id = a.id) \
+          WHERE  q.name = "Support" AND t.ticket_state_id=1;' > otrs-support.mbox
