@@ -35,3 +35,35 @@ On dispose de
 * ``/var/lib/mailman/bin/discard`` pour supprimer un message en modération (dans le cas de spam vraiment massif).
 
 Mailman logge dans ``/var/log/mailman``.
+
+Archives
+--------
+
+Les archives de mailman se trouvent dans ``/var/lib/mailman/archives/private``. Par exemple la liste ma-liste@listes.example.org a ses archives dans un fichier MBOX situé dans ``/var/lib/mailman/archives/private/ma-liste.mbox/ma-liste.mbox``.
+À Polytechnique.org, la visualisation de ces archives sur internet utilise Banana, qui communique avec mailman en NNTP pour obtenir les arborescences de messages.
+
+Pour supprimer un message, il suffit d'éditer le fichier MBOX avec par exemple Mutt::
+
+    cp ma-liste.mbox modif.mbox
+    mutt -f modif.mbox
+
+À la fin de l'édition du fichier mbox, Mutt a pu ajouter des entêtes suivants dans les messages::
+
+    Status: O
+    Content-Length: 357
+    Lines: 15
+
+Pour les supprimer, il suffit d'éxecuter la commande ``sed`` suivante::
+
+    sed '/^Status: /{N;N;/Content-Length: .*Lines: /d}' < modif.mbox > modif-clean.mbox
+
+À la fin du traitement, si ``ma-liste.mbox`` n'a pas été modifié (ie. si aucun message n'a été reçu), il est possible de régénérer les archives comme décrit sur http://wiki.list.org/pages/viewpage.action?pageId=4030681)::
+
+    mv ma-liste.mbox OLD-ma-liste.mbox
+    mv modif-clean.mbox ma-liste.mbox
+    cd /var/lib/mailman
+    ./bin/arch ma-liste
+
+De plus, il faut vider le cache de banana concernant les archives de la liste::
+
+    rm ~web/prod/platal/spool/banana/MLArchives/ma-liste/*
