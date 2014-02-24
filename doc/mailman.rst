@@ -57,7 +57,7 @@ Pour les supprimer, il suffit d'éxecuter la commande ``sed`` suivante::
 
     sed '/^Status: /{N;N;/Content-Length: .*Lines: /d}' < modif.mbox > modif-clean.mbox
 
-À la fin du traitement, si ``ma-liste.mbox`` n'a pas été modifié (ie. si aucun message n'a été reçu), il est possible de régénérer les archives comme décrit sur http://wiki.list.org/pages/viewpage.action?pageId=4030681)::
+À la fin du traitement, si ``ma-liste.mbox`` n'a pas été modifié (ie. si aucun message n'a été reçu), il est possible de régénérer les archives comme décrit sur http://wiki.list.org/pages/viewpage.action?pageId=4030681::
 
     mv ma-liste.mbox OLD-ma-liste.mbox
     mv modif-clean.mbox ma-liste.mbox
