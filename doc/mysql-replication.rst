@@ -166,7 +166,9 @@ Relancer la réplication après arrêt violent du master
 * Si ces vérifications d'intégrité réussissent, il est possible de relancer la
   synchronisation sur les slaves avec::
 
+    STOP SLAVE;
     CHANGE MASTER TO MASTER_LOG_FILE='mysql-bin.YYYYYY', MASTER_LOG_POS=0;
+    START SLAVE;
 
 * Sinon, il faut réinstaller la réplication à partir d'un dump de la base de
   donnée effectué avec un read lock, ce qui induit un downtime des services
